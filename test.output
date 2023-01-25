@@ -1,119 +1,930 @@
-Grammar
+Terminals unused in grammar
 
-    0 $accept: prog $end
-
-    1 prog: stmts
-
-    2 stmts: %empty
-    3      | stmt SEMICOLON stmts
-
-    4 stmt: STRING
-    5     | NUM
-    6     | OTHER
+   TYPE
+   IF
+   FL
+   FOR
+   WHILE
+   OTHER
 
 
-Terminals, with rules where they appear
+文法
+
+    0 $accept: input $end
+
+    1 input: line input
+    2      | line
+
+    3 line: expression SEMICOLON EOL
+    4     | stringa SEMICOLON EOL
+    5     | cond_expression SEMICOLON EOL
+    6     | assign SEMICOLON EOL
+    7     | variabletype BADGE SEMICOLON EOL
+    8     | WORD BADGE SEMICOLON EOL
+    9     | WORD INTEGERV
+   10     | WORD FLOATV
+   11     | EXIT
+
+   12 expression: expression '*' expression
+   13           | expression '+' expression
+   14           | expression '-' expression
+   15           | expression '/' expression
+   16           | expression INC
+   17           | expression DEC
+   18           | '-' expression
+   19           | '(' expression ')'
+   20           | INTEGERV
+   21           | FLOATV
+
+   22 stringa: STRING
+
+   23 cond_expression: expression '>' expression
+   24                | expression '<' expression
+   25                | expression COMPARISON expression
+   26                | expression NEGATION expression
+   27                | expression GREATEREQUAL expression
+   28                | expression LESSEQUAL expression
+
+   29 assign: variabletype BADGE '=' expression
+   30       | variabletype BADGE '=' stringa
+   31       | WORD BADGE '=' stringa
+   32       | WORD BADGE '=' expression
+   33       | BADGE '=' expression
+   34       | BADGE '=' stringa
+
+   35 variabletype: FLOAT
+   36             | INTEGER
+
+
+出現位置の規則による終端
 
 $end (0) 0
+'(' (40) 19
+')' (41) 19
+'*' (42) 12
+'+' (43) 13
+'-' (45) 14 18
+'/' (47) 15
+'<' (60) 24
+'=' (61) 29 30 31 32 33 34
+'>' (62) 23
 error (256)
-STRING (258) 4
-NUM (259) 5
-OTHER (260) 6
-SEMICOLON (261) 3
+STRING (258) 22
+INTEGERV (259) 9 20
+FLOATV (260) 10 21
+INTEGER (261) 36
+FLOAT (262) 35
+WORD (263) 8 9 10 31 32
+TYPE (264)
+BADGE (265) 7 8 29 30 31 32 33 34
+IF (266)
+FL (267)
+FOR (268)
+WHILE (269)
+OTHER (270)
+EXIT (271) 11
+SEMICOLON (272) 3 4 5 6 7 8
+EOL (273) 3 4 5 6 7 8
+COMPARISON (274) 25
+NEGATION (275) 26
+GREATEREQUAL (276) 27
+LESSEQUAL (277) 28
+DEC (278) 17
+INC (279) 16
+MINUS (280)
 
 
-Nonterminals, with rules where they appear
+出現位置の規則による非終端
 
-$accept (7)
-    on left: 0
-prog (8)
-    on left: 1, on right: 0
-stmts (9)
-    on left: 2 3, on right: 1 3
-stmt (10)
-    on left: 4 5 6, on right: 3
-
-
-State 0
-
-    0 $accept: . prog $end
-
-    STRING  shift, and go to state 1
-    NUM     shift, and go to state 2
-    OTHER   shift, and go to state 3
-
-    $default  reduce using rule 2 (stmts)
-
-    prog   go to state 4
-    stmts  go to state 5
-    stmt   go to state 6
+$accept (35)
+    左辺: 0
+input (36)
+    左辺: 1 2, 右辺: 0 1
+line (37)
+    左辺: 3 4 5 6 7 8 9 10 11, 右辺: 1 2
+expression (38)
+    左辺: 12 13 14 15 16 17 18 19 20 21, 右辺: 3 12 13 14 15 16 17
+    18 19 23 24 25 26 27 28 29 32 33
+stringa (39)
+    左辺: 22, 右辺: 4 30 31 34
+cond_expression (40)
+    左辺: 23 24 25 26 27 28, 右辺: 5
+assign (41)
+    左辺: 29 30 31 32 33 34, 右辺: 6
+variabletype (42)
+    左辺: 35 36, 右辺: 7 29 30
 
 
-State 1
+状態 0
 
-    4 stmt: STRING .
+    0 $accept: . input $end
 
-    $default  reduce using rule 4 (stmt)
+    STRING    shift, and go to state 1
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    INTEGER   shift, and go to state 4
+    FLOAT     shift, and go to state 5
+    WORD      shift, and go to state 6
+    BADGE     shift, and go to state 7
+    EXIT      shift, and go to state 8
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
 
-
-State 2
-
-    5 stmt: NUM .
-
-    $default  reduce using rule 5 (stmt)
-
-
-State 3
-
-    6 stmt: OTHER .
-
-    $default  reduce using rule 6 (stmt)
-
-
-State 4
-
-    0 $accept: prog . $end
-
-    $end  shift, and go to state 7
+    input            go to state 11
+    line             go to state 12
+    expression       go to state 13
+    stringa          go to state 14
+    cond_expression  go to state 15
+    assign           go to state 16
+    variabletype     go to state 17
 
 
-State 5
+状態 1
 
-    1 prog: stmts .
+   22 stringa: STRING .
 
-    $default  reduce using rule 1 (prog)
-
-
-State 6
-
-    3 stmts: stmt . SEMICOLON stmts
-
-    SEMICOLON  shift, and go to state 8
+    $default  reduce using rule 22 (stringa)
 
 
-State 7
+状態 2
 
-    0 $accept: prog $end .
+   20 expression: INTEGERV .
+
+    $default  reduce using rule 20 (expression)
+
+
+状態 3
+
+   21 expression: FLOATV .
+
+    $default  reduce using rule 21 (expression)
+
+
+状態 4
+
+   36 variabletype: INTEGER .
+
+    $default  reduce using rule 36 (variabletype)
+
+
+状態 5
+
+   35 variabletype: FLOAT .
+
+    $default  reduce using rule 35 (variabletype)
+
+
+状態 6
+
+    8 line: WORD . BADGE SEMICOLON EOL
+    9     | WORD . INTEGERV
+   10     | WORD . FLOATV
+   31 assign: WORD . BADGE '=' stringa
+   32       | WORD . BADGE '=' expression
+
+    INTEGERV  shift, and go to state 18
+    FLOATV    shift, and go to state 19
+    BADGE     shift, and go to state 20
+
+
+状態 7
+
+   33 assign: BADGE . '=' expression
+   34       | BADGE . '=' stringa
+
+    '='  shift, and go to state 21
+
+
+状態 8
+
+   11 line: EXIT .
+
+    $default  reduce using rule 11 (line)
+
+
+状態 9
+
+   19 expression: '(' . expression ')'
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 22
+
+
+状態 10
+
+   18 expression: '-' . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 23
+
+
+状態 11
+
+    0 $accept: input . $end
+
+    $end  shift, and go to state 24
+
+
+状態 12
+
+    1 input: line . input
+    2      | line .
+
+    STRING    shift, and go to state 1
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    INTEGER   shift, and go to state 4
+    FLOAT     shift, and go to state 5
+    WORD      shift, and go to state 6
+    BADGE     shift, and go to state 7
+    EXIT      shift, and go to state 8
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    $default  reduce using rule 2 (input)
+
+    input            go to state 25
+    line             go to state 12
+    expression       go to state 13
+    stringa          go to state 14
+    cond_expression  go to state 15
+    assign           go to state 16
+    variabletype     go to state 17
+
+
+状態 13
+
+    3 line: expression . SEMICOLON EOL
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   23 cond_expression: expression . '>' expression
+   24                | expression . '<' expression
+   25                | expression . COMPARISON expression
+   26                | expression . NEGATION expression
+   27                | expression . GREATEREQUAL expression
+   28                | expression . LESSEQUAL expression
+
+    SEMICOLON     shift, and go to state 26
+    '<'           shift, and go to state 27
+    '>'           shift, and go to state 28
+    COMPARISON    shift, and go to state 29
+    NEGATION      shift, and go to state 30
+    GREATEREQUAL  shift, and go to state 31
+    LESSEQUAL     shift, and go to state 32
+    DEC           shift, and go to state 33
+    INC           shift, and go to state 34
+    '+'           shift, and go to state 35
+    '-'           shift, and go to state 36
+    '*'           shift, and go to state 37
+    '/'           shift, and go to state 38
+
+
+状態 14
+
+    4 line: stringa . SEMICOLON EOL
+
+    SEMICOLON  shift, and go to state 39
+
+
+状態 15
+
+    5 line: cond_expression . SEMICOLON EOL
+
+    SEMICOLON  shift, and go to state 40
+
+
+状態 16
+
+    6 line: assign . SEMICOLON EOL
+
+    SEMICOLON  shift, and go to state 41
+
+
+状態 17
+
+    7 line: variabletype . BADGE SEMICOLON EOL
+   29 assign: variabletype . BADGE '=' expression
+   30       | variabletype . BADGE '=' stringa
+
+    BADGE  shift, and go to state 42
+
+
+状態 18
+
+    9 line: WORD INTEGERV .
+
+    $default  reduce using rule 9 (line)
+
+
+状態 19
+
+   10 line: WORD FLOATV .
+
+    $default  reduce using rule 10 (line)
+
+
+状態 20
+
+    8 line: WORD BADGE . SEMICOLON EOL
+   31 assign: WORD BADGE . '=' stringa
+   32       | WORD BADGE . '=' expression
+
+    SEMICOLON  shift, and go to state 43
+    '='        shift, and go to state 44
+
+
+状態 21
+
+   33 assign: BADGE '=' . expression
+   34       | BADGE '=' . stringa
+
+    STRING    shift, and go to state 1
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 45
+    stringa     go to state 46
+
+
+状態 22
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   19           | '(' expression . ')'
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    ')'  shift, and go to state 47
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+
+状態 23
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   18           | '-' expression .
+
+    $default  reduce using rule 18 (expression)
+
+
+状態 24
+
+    0 $accept: input $end .
 
     $default  accept
 
 
-State 8
+状態 25
 
-    3 stmts: stmt SEMICOLON . stmts
+    1 input: line input .
 
-    STRING  shift, and go to state 1
-    NUM     shift, and go to state 2
-    OTHER   shift, and go to state 3
-
-    $default  reduce using rule 2 (stmts)
-
-    stmts  go to state 9
-    stmt   go to state 6
+    $default  reduce using rule 1 (input)
 
 
-State 9
+状態 26
 
-    3 stmts: stmt SEMICOLON stmts .
+    3 line: expression SEMICOLON . EOL
 
-    $default  reduce using rule 3 (stmts)
+    EOL  shift, and go to state 48
+
+
+状態 27
+
+   24 cond_expression: expression '<' . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 49
+
+
+状態 28
+
+   23 cond_expression: expression '>' . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 50
+
+
+状態 29
+
+   25 cond_expression: expression COMPARISON . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 51
+
+
+状態 30
+
+   26 cond_expression: expression NEGATION . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 52
+
+
+状態 31
+
+   27 cond_expression: expression GREATEREQUAL . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 53
+
+
+状態 32
+
+   28 cond_expression: expression LESSEQUAL . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 54
+
+
+状態 33
+
+   17 expression: expression DEC .
+
+    $default  reduce using rule 17 (expression)
+
+
+状態 34
+
+   16 expression: expression INC .
+
+    $default  reduce using rule 16 (expression)
+
+
+状態 35
+
+   13 expression: expression '+' . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 55
+
+
+状態 36
+
+   14 expression: expression '-' . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 56
+
+
+状態 37
+
+   12 expression: expression '*' . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 57
+
+
+状態 38
+
+   15 expression: expression '/' . expression
+
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 58
+
+
+状態 39
+
+    4 line: stringa SEMICOLON . EOL
+
+    EOL  shift, and go to state 59
+
+
+状態 40
+
+    5 line: cond_expression SEMICOLON . EOL
+
+    EOL  shift, and go to state 60
+
+
+状態 41
+
+    6 line: assign SEMICOLON . EOL
+
+    EOL  shift, and go to state 61
+
+
+状態 42
+
+    7 line: variabletype BADGE . SEMICOLON EOL
+   29 assign: variabletype BADGE . '=' expression
+   30       | variabletype BADGE . '=' stringa
+
+    SEMICOLON  shift, and go to state 62
+    '='        shift, and go to state 63
+
+
+状態 43
+
+    8 line: WORD BADGE SEMICOLON . EOL
+
+    EOL  shift, and go to state 64
+
+
+状態 44
+
+   31 assign: WORD BADGE '=' . stringa
+   32       | WORD BADGE '=' . expression
+
+    STRING    shift, and go to state 1
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 65
+    stringa     go to state 66
+
+
+状態 45
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   33 assign: BADGE '=' expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 33 (assign)
+
+
+状態 46
+
+   34 assign: BADGE '=' stringa .
+
+    $default  reduce using rule 34 (assign)
+
+
+状態 47
+
+   19 expression: '(' expression ')' .
+
+    $default  reduce using rule 19 (expression)
+
+
+状態 48
+
+    3 line: expression SEMICOLON EOL .
+
+    $default  reduce using rule 3 (line)
+
+
+状態 49
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   24 cond_expression: expression '<' expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 24 (cond_expression)
+
+
+状態 50
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   23 cond_expression: expression '>' expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 23 (cond_expression)
+
+
+状態 51
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   25 cond_expression: expression COMPARISON expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 25 (cond_expression)
+
+
+状態 52
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   26 cond_expression: expression NEGATION expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 26 (cond_expression)
+
+
+状態 53
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   27 cond_expression: expression GREATEREQUAL expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 27 (cond_expression)
+
+
+状態 54
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   28 cond_expression: expression LESSEQUAL expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 28 (cond_expression)
+
+
+状態 55
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   13           | expression '+' expression .
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 13 (expression)
+
+
+状態 56
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   14           | expression '-' expression .
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 14 (expression)
+
+
+状態 57
+
+   12 expression: expression . '*' expression
+   12           | expression '*' expression .
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+
+    $default  reduce using rule 12 (expression)
+
+
+状態 58
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   15           | expression '/' expression .
+   16           | expression . INC
+   17           | expression . DEC
+
+    $default  reduce using rule 15 (expression)
+
+
+状態 59
+
+    4 line: stringa SEMICOLON EOL .
+
+    $default  reduce using rule 4 (line)
+
+
+状態 60
+
+    5 line: cond_expression SEMICOLON EOL .
+
+    $default  reduce using rule 5 (line)
+
+
+状態 61
+
+    6 line: assign SEMICOLON EOL .
+
+    $default  reduce using rule 6 (line)
+
+
+状態 62
+
+    7 line: variabletype BADGE SEMICOLON . EOL
+
+    EOL  shift, and go to state 67
+
+
+状態 63
+
+   29 assign: variabletype BADGE '=' . expression
+   30       | variabletype BADGE '=' . stringa
+
+    STRING    shift, and go to state 1
+    INTEGERV  shift, and go to state 2
+    FLOATV    shift, and go to state 3
+    '('       shift, and go to state 9
+    '-'       shift, and go to state 10
+
+    expression  go to state 68
+    stringa     go to state 69
+
+
+状態 64
+
+    8 line: WORD BADGE SEMICOLON EOL .
+
+    $default  reduce using rule 8 (line)
+
+
+状態 65
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   32 assign: WORD BADGE '=' expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 32 (assign)
+
+
+状態 66
+
+   31 assign: WORD BADGE '=' stringa .
+
+    $default  reduce using rule 31 (assign)
+
+
+状態 67
+
+    7 line: variabletype BADGE SEMICOLON EOL .
+
+    $default  reduce using rule 7 (line)
+
+
+状態 68
+
+   12 expression: expression . '*' expression
+   13           | expression . '+' expression
+   14           | expression . '-' expression
+   15           | expression . '/' expression
+   16           | expression . INC
+   17           | expression . DEC
+   29 assign: variabletype BADGE '=' expression .
+
+    DEC  shift, and go to state 33
+    INC  shift, and go to state 34
+    '+'  shift, and go to state 35
+    '-'  shift, and go to state 36
+    '*'  shift, and go to state 37
+    '/'  shift, and go to state 38
+
+    $default  reduce using rule 29 (assign)
+
+
+状態 69
+
+   30 assign: variabletype BADGE '=' stringa .
+
+    $default  reduce using rule 30 (assign)

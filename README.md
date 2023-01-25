@@ -7,6 +7,6 @@ Small compiler project for a C-like language
 - flex test.l
 - bison -d -v -t test.y
 - gcc -o test test.tab.c lex.yy.c
-- Execute te st.exe
+- Execute test.exe
 
 Developed on Windows 10
